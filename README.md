@@ -11,23 +11,23 @@ flowchart TB
 
     subgraph Edge ["Edge / Ingress (PUBLIC)"]
         LB[External Load Balancer / Cloud LB]
-        Nginx[Nginx Reverse Proxy<br/>SSL termination, rate limit, WAF]
+        Nginx[Nginx Reverse Proxy, SSL termination, rate limit, WAF]
     end
 
     subgraph Gateway ["API Gateway / Auth (опционально)"]
-        APIGW[API Gateway<br/>JWT/OAuth, routing, logging]
+        APIGW[API Gateway, JWT/OAuth, routing, logging]
     end
 
     subgraph Backend ["Backend Services"]
-        Laravel[Laravel (PHP-FPM)<br/>API + Web]
-        Python[Python Service<br/>ML/scraper/worker]
+        Laravel[Laravel (PHP-FPM), API + Web]
+        Python[Python Service, ML/scraper/worker]
     end
 
     subgraph Queue ["Очереди и Workers"]
-        Redis[(Redis<br/>Cache + Queue + Session)]
-        RabbitMQ[(RabbitMQ<br/>Queue)]
-        Horizon[Laravel Horizon<br/>Queue Worker]
-        Celery[Celery<br/>Python Worker]
+        Redis[(Redis, Cache + Queue + Session)]
+        RabbitMQ[(RabbitMQ, Queue)]
+        Horizon[Laravel Horizon, Queue Worker]
+        Celery[Celery, Python Worker]
     end
 
     subgraph DataLayer ["Слой данных"]
@@ -36,22 +36,22 @@ flowchart TB
     end
 
     subgraph Storage ["Storage"]
-        S3[S3 / MinIO<br/>Files, Backups]
+        S3[S3 / MinIO, Files, Backups]
     end
 
     subgraph Proxy ["Proxy (исходящие запросы)"]
-        ProxyHTTP[HTTP/SOCKS5 Proxy<br/>Outgoing traffic]
+        ProxyHTTP[HTTP/SOCKS5 Proxy, Outgoing traffic]
     end
 
     subgraph Observability ["Observability"]
-        Prometheus[Prometheus<br/>Metrics]
-        Grafana[Grafana<br/>Dashboards]
-        ELK[ELK / EFK / Loki<br/>Logs]
-        Jaeger[Jaeger / Tempo<br/>Tracing]
+        Prometheus[Prometheus, Metrics]
+        Grafana[Grafana, Dashboards]
+        ELK[ELK / EFK / Loki, Logs]
+        Jaeger[Jaeger / Tempo, Tracing]
     end
 
     subgraph CI_CD ["CI/CD"]
-        GitHub[GitHub Actions / GitLab CI<br/>Build, Test, Deploy]
+        GitHub[GitHub Actions / GitLab CI, Build, Test, Deploy]
     end
 
     Browser -->|HTTPS| LB
