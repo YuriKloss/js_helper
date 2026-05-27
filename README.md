@@ -1,97 +1,97 @@
 ```mermaid
 flowchart TB
-    subgraph Clients ["Клиенты"]
-        Browser[Браузер / Мобильное приложение]
-        CLI[CLI клиенты]
+    subgraph Clients ["Clients"]
+        Browser[Browser or Mobile]
+        CLI[CLI clients]
     end
 
-    subgraph CDN ["CDN / Статика (опционально)"]
-        Static[Объектное хранилище S3/MinIO + CDN]
+    subgraph CDN ["CDN and Static"]
+        Static[Object storage S3 or MinIO and CDN]
     end
 
-    subgraph Edge ["Edge / Ingress (PUBLIC)"]
-        LB[External Load Balancer / Cloud LB]
-        Nginx[Nginx Reverse Proxy, SSL termination, rate limit, WAF]
+    subgraph Edge ["Edge and Ingress"]
+        LB[External Load Balancer or Cloud LB]
+        Nginx[Nginx Reverse Proxy with SSL and WAF]
     end
 
-    subgraph Gateway ["API Gateway / Auth (опционально)"]
-        APIGW[API Gateway, JWT/OAuth, routing, logging]
+    subgraph Gateway ["API Gateway"]
+        APIGW[API Gateway with auth and routing]
     end
 
     subgraph Backend ["Backend Services"]
-        Laravel[Laravel (PHP-FPM), API + Web]
-        Python[Python Service, ML/scraper/worker]
+        Laravel[Laravel PHP FPM API and Web]
+        Python[Python Service worker or scraper]
     end
 
-    subgraph Queue ["Очереди и Workers"]
-        Redis[(Redis, Cache + Queue + Session)]
-        RabbitMQ[(RabbitMQ, Queue)]
-        Horizon[Laravel Horizon, Queue Worker]
-        Celery[Celery, Python Worker]
+    subgraph Queue ["Queues and Workers"]
+        Redis[Redis cache and queue and session]
+        RabbitMQ[RabbitMQ queue]
+        Horizon[Laravel Horizon worker]
+        Celery[Celery Python worker]
     end
 
-    subgraph DataLayer ["Слой данных"]
-        MySQL[(MySQL / MariaDB)]
-        Postgres[(PostgreSQL)]
+    subgraph DataLayer ["Data layer"]
+        MySQL[MySQL or MariaDB]
+        Postgres[PostgreSQL]
     end
 
     subgraph Storage ["Storage"]
-        S3[S3 / MinIO, Files, Backups]
+        S3[S3 or MinIO files and backups]
     end
 
-    subgraph Proxy ["Proxy (исходящие запросы)"]
-        ProxyHTTP[HTTP/SOCKS5 Proxy, Outgoing traffic]
+    subgraph Proxy ["Outgoing proxy"]
+        ProxyHTTP[HTTP or SOCKS5 proxy]
     end
 
     subgraph Observability ["Observability"]
-        Prometheus[Prometheus, Metrics]
-        Grafana[Grafana, Dashboards]
-        ELK[ELK / EFK / Loki, Logs]
-        Jaeger[Jaeger / Tempo, Tracing]
+        Prometheus[Prometheus metrics]
+        Grafana[Grafana dashboards]
+        ELK[ELK or EFK or Loki logs]
+        Jaeger[Jaeger or Tempo tracing]
     end
 
-    subgraph CI_CD ["CI/CD"]
-        GitHub[GitHub Actions / GitLab CI, Build, Test, Deploy]
+    subgraph CI_CD ["CI and CD"]
+        GitHub[GitHub Actions or GitLab CI]
     end
 
     Browser -->|HTTPS| LB
     CLI -->|HTTPS| LB
     LB --> Nginx
-    Nginx -->|Route to Laravel| APIGW
-    Nginx -->|Route to Python| APIGW
+    Nginx -->|to Laravel| APIGW
+    Nginx -->|to Python| APIGW
     APIGW --> Laravel
     APIGW --> Python
 
-    Laravel -->|Cache/Session| Redis
-    Laravel -->|Queue| Redis
-    Laravel -->|DB| MySQL
-    Laravel -->|Files| S3
+    Laravel -->|cache or session| Redis
+    Laravel -->|queue| Redis
+    Laravel -->|db| MySQL
+    Laravel -->|files| S3
     Laravel --> Horizon
-    Horizon -->|Process jobs| Redis
+    Horizon -->|process jobs| Redis
 
-    Python -->|Cache| Redis
-    Python -->|Queue| RabbitMQ
-    Python -->|DB| Postgres
+    Python -->|cache| Redis
+    Python -->|queue| RabbitMQ
+    Python -->|db| Postgres
     Python --> Celery
-    Celery -->|Process jobs| RabbitMQ
+    Celery -->|process jobs| RabbitMQ
 
-    Laravel -->|External HTTP| ProxyHTTP
-    Python -->|External HTTP| ProxyHTTP
-    ProxyHTTP -->|Outgoing| ExtExternal((External APIs))
+    Laravel -->|external http| ProxyHTTP
+    Python -->|external http| ProxyHTTP
+    ProxyHTTP -->|outgoing| ExtExternal[External APIs]
 
-    Laravel -.->|Serve static| Static
-    Browser -.->|Static assets| Static
+    Laravel -.->|serve static| Static
+    Browser -.->|static assets| Static
 
-    Laravel -->|Metrics| Prometheus
-    Python -->|Metrics| Prometheus
-    Nginx -->|Logs| ELK
-    Laravel -->|Logs| ELK
-    Python -->|Logs| ELK
+    Laravel -->|metrics| Prometheus
+    Python -->|metrics| Prometheus
+    Nginx -->|logs| ELK
+    Laravel -->|logs| ELK
+    Python -->|logs| ELK
     Prometheus --> Grafana
-    Laravel -->|Traces| Jaeger
-    Python -->|Traces| Jaeger
+    Laravel -->|traces| Jaeger
+    Python -->|traces| Jaeger
 
-    GitHub -->|Build & Deploy| Laravel
-    GitHub -->|Build & Deploy| Python
-    GitHub -->|Deploy| Nginx
+    GitHub -->|build and deploy| Laravel
+    GitHub -->|build and deploy| Python
+    GitHub -->|deploy| Nginx
 ```
